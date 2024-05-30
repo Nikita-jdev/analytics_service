@@ -76,8 +76,8 @@ public class AnalyticsEventService {
                                                     Interval interval) {
         return analyticsEventStream.stream()
                 .filter(receiverAt ->
-                        receiverAt.getReceivedAt().isAfter(interval.getFrom()) &&
-                                receiverAt.getReceivedAt().isBefore(interval.getTo()))
+                        receiverAt.getReceivedAt().isAfter(interval.getTo()) &&
+                                receiverAt.getReceivedAt().isBefore(interval.getFrom()))
                 .toList();
     }
 

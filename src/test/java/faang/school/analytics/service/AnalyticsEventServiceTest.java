@@ -93,13 +93,13 @@ public class AnalyticsEventServiceTest {
         Interval interval = new Interval(LocalDateTime.now(), 10);
         EventType succesEventType = EventType.FOLLOWER;
         EventType failureEventType = EventType.POST_LIKE;
-        long succesReceiverId = 3;
+        long successReceiverId = 3;
         long failureReceiverId = 6;
         int successIntervalDays = 5;
         int failureIntervalDays = 15;
 
         AnalyticsEvent successAnalytics = getAnalyticsEvent(
-                succesReceiverId,
+                successReceiverId,
                 succesEventType,
                 successIntervalDays);
         AnalyticsEvent failureAnalytics = getAnalyticsEvent(
@@ -107,11 +107,11 @@ public class AnalyticsEventServiceTest {
                 failureEventType,
                 failureIntervalDays);
 
-        when(analyticsEventRepository.findByReceiverIdAndEventType(succesReceiverId, succesEventType))
+        when(analyticsEventRepository.findByReceiverIdAndEventType(successReceiverId, succesEventType))
                 .thenReturn(Stream.of(successAnalytics, failureAnalytics));
 
         List<AnalyticsEventDto> results = analyticsEventService.getAnalytics(
-                succesReceiverId, succesEventType, interval, fixedTime, fixedTime);
+                successReceiverId, succesEventType, interval, fixedTime, fixedTime);
 
         assertEquals(analyticsEventMapper.toAnalyticsDto(successAnalytics), results.get(0));
     }
