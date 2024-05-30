@@ -61,12 +61,11 @@ public class AnalyticsEventService {
         List<AnalyticsEvent> analyticsEvents = analyticsEventRepository
                 .findByReceiverIdAndEventType(receiverId, eventType)
                 .toList();
-        if (interval != null) {
-            analyticsEvents = filterWithInterval(analyticsEvents, interval);
-        }
-        if (interval == null) {
-            analyticsEvents = filterWithFromTo(analyticsEvents, from, to);
-        }
+
+        analyticsEvents = (interval != null)
+                ? filterWithInterval(analyticsEvents, interval)
+                : filterWithFromTo(analyticsEvents, from, to);
+
         return analyticsEvents.stream()
                 .sorted(Comparator.comparing(AnalyticsEvent::getReceivedAt).reversed())
                 .map(analyticsEventMapper::toAnalyticsDto)
@@ -77,8 +76,8 @@ public class AnalyticsEventService {
                                                     Interval interval) {
         return analyticsEventStream.stream()
                 .filter(receiverAt ->
-                        receiverAt.getReceivedAt().isAfter(interval.getTo()) &&
-                                receiverAt.getReceivedAt().isBefore(interval.getFrom()))
+                        receiverAt.getReceivedAt().isAfter(interval.getFrom()) &&
+                                receiverAt.getReceivedAt().isBefore(interval.getTo()))
                 .toList();
     }
 
