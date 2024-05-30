@@ -67,12 +67,10 @@ public class AnalyticsEventService {
         List<AnalyticsEvent> analyticsEvents = analyticsEventRepository
                 .findByReceiverIdAndEventType(receiverId, eventType)
                 .toList();
-        if (interval != null) {
-            analyticsEvents = filterWithInterval(analyticsEvents, interval);
-        }
-        if (interval == null) {
-            analyticsEvents = filterWithFromTo(analyticsEvents, from, to);
-        }
+        analyticsEvents = (interval != null)
+                ? filterWithInterval(analyticsEvents, interval)
+                : filterWithFromTo(analyticsEvents, from, to);
+
         return analyticsEvents.stream()
                 .sorted(Comparator.comparing(AnalyticsEvent::getReceivedAt).reversed())
                 .map(analyticsEventMapper::toAnalyticsDto)

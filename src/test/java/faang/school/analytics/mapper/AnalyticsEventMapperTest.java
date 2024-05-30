@@ -6,7 +6,6 @@ import faang.school.analytics.dto.PremiumBoughtEvent;
 import faang.school.analytics.dto.RecommendationEvent;
 import faang.school.analytics.dto.follower.FollowerEventDto;
 import faang.school.analytics.model.AnalyticsEvent;
-import faang.school.analytics.model.EventType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +24,6 @@ class AnalyticsEventMapperTest {
     private AnalyticsEvent event;
     private AnalyticsEventDto analyticsEventDto;
     private AnalyticsEvent analyticsEvent;
-    private AnalyticsEvent recommendationAnaliticsEvent;
     private FollowerEventDto followerEventDto;
     private RecommendationEvent recommendationEvent;
     LocalDateTime fixedTime = LocalDateTime.of(2024, 2, 22, 20, 6, 30);
@@ -47,13 +45,6 @@ class AnalyticsEventMapperTest {
         analyticsEventDto = AnalyticsEventDto.builder()
                 .receiverId(1L)
                 .actorId(2L)
-                .receivedAt(fixedTime)
-                .build();
-
-        recommendationAnaliticsEvent = AnalyticsEvent.builder()
-                .id(2L)
-                .receiverId(3L)
-                .actorId(1L)
                 .receivedAt(fixedTime)
                 .build();
 
