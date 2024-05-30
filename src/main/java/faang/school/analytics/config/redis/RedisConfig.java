@@ -1,7 +1,7 @@
 package faang.school.analytics.config.redis;
 
-import faang.school.analytics.listener.MentorshipRequestedEventListener;
 import faang.school.analytics.listener.FollowerEventListener;
+import faang.school.analytics.listener.MentorshipRequestedEventListener;
 import faang.school.analytics.listener.RecommendationEventListener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,9 +19,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @RequiredArgsConstructor
 public class RedisConfig {
 
-    private final RecommendationEventListener recommendationEventListener;
-    private final MentorshipRequestedEventListener mentorshipRequestedEventListener;
-    private final FollowerEventListener followerEventListener;
 
     @Value("${spring.data.redis.host}")
     private String redisHost;
@@ -80,7 +77,9 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer() {
+    RedisMessageListenerContainer redisContainer(RecommendationEventListener recommendationEventListener,
+                                                 MentorshipRequestedEventListener mentorshipRequestedEventListener,
+                                                 FollowerEventListener followerEventListener) {
         RedisMessageListenerContainer container
                 = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
