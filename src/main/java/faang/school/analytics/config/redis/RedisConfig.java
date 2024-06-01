@@ -2,8 +2,8 @@ package faang.school.analytics.config.redis;
 
 import faang.school.analytics.listener.FollowerEventListener;
 import faang.school.analytics.listener.MentorshipRequestedEventListener;
+import faang.school.analytics.listener.PremiumBoughtEventListener;
 import faang.school.analytics.listener.RecommendationEventListener;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +28,8 @@ public class RedisConfig {
     private String recommendationChannelName;
     @Value("${spring.data.redis.channel.mentorship-requested}")
     private String mentorshipRequestedChannelName;
+    @Value("${spring.data.redis.channel.premium_bought_channel}")
+    private String premiumBoughtChannel;
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory() {
@@ -60,6 +62,11 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListenerAdapter premiumBoughtListener(PremiumBoughtEventListener premiumBoughtEventListener) {
+        return new MessageListenerAdapter(premiumBoughtEventListener);
+    }
+
+    @Bean
     ChannelTopic recommendationTopic() {
         return new ChannelTopic(recommendationChannelName);
     }
@@ -75,9 +82,17 @@ public class RedisConfig {
     }
 
     @Bean
-    RedisMessageListenerContainer redisContainer(RecommendationEventListener recommendationEventListener,
-                                                 MentorshipRequestedEventListener mentorshipRequestedEventListener,
-                                                 FollowerEventListener followerEventListener) {
+    ChannelTopic premiumBoughtTopic() {
+        return new ChannelTopic(premiumBoughtChannel);
+    }
+
+    @Bean
+    RedisMessageListenerContainer redisContainer(
+            RecommendationEventListener recommendationEventListener,
+            MentorshipRequestedEventListener mentorshipRequestedEventListener,
+            FollowerEventListener followerEventListener,
+            PremiumBoughtEventListener premiumBoughtEventListener) {
+
         RedisMessageListenerContainer container
                 = new RedisMessageListenerContainer();
         container.setConnectionFactory(jedisConnectionFactory());
@@ -85,6 +100,7 @@ public class RedisConfig {
         container.addMessageListener(recommendationListener(recommendationEventListener), recommendationTopic());
         container.addMessageListener(mentorshipRequestedListener(mentorshipRequestedEventListener), mentorshipRequestedTopic());
         container.addMessageListener(followerListener(followerEventListener), followerTopic());
+        container.addMessageListener(premiumBoughtListener(premiumBoughtEventListener), premiumBoughtTopic());
 
         return container;
     }
